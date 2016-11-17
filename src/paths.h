@@ -16,8 +16,8 @@ static struct paths {
     char *path;			/* path plus command options - never NULL */
 } paths[] = {
     { "MANBIN",	"" },		/* value unused */
-    { "APROPOS",  "/usr/bin/bin/apropos" },
-    { "WHATIS",   "/usr/bin/bin/whatis" },
+    { "APROPOS",  "/usr/bin/apropos" },
+    { "WHATIS",   "/usr/bin/whatis" },
     { "TROFF",	"/usr/bin/groff -Tps -mandoc -c" },
     { "NROFF",	"/usr/bin/groff -Wall -mtty-char -Tascii -mandoc -c" },
     { "JNROFF",	"/usr/bin/groff -Tnippon -mandocj -c" },
