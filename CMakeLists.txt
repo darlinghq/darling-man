@@ -8,6 +8,13 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 include_directories(${DARLING_TOP_DIRECTORY}/src/libc/include/FreeBSD)
 
+# Hide warnings
+add_definitions(
+	-Wno-int-conversion
+	-Wno-incompatible-library-redeclaration
+	-Wno-incompatible-pointer-types-discards-qualifiers
+)
+
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -nostdinc -fwrapv -fPIC -ggdb")
 set(CMAKE_SHARED_LINKER_FLAGS "-nodefaultlibs -nostdlib -fPIC -Wl,--version-script=${DARLING_TOP_DIRECTORY}/darwin.map")
 set(CMAKE_EXE_LINKER_FLAGS "-nodefaultlibs -nostdlib -fPIC -Wl,--version-script=${DARLING_TOP_DIRECTORY}/darwin.map")
