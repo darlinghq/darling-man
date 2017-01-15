@@ -43,7 +43,9 @@ target_link_libraries(man system)
 
 install(TARGETS man DESTINATION libexec/darling/usr/bin)
 
-install(FILES src/apropos src/whatis DESTINATION libexec/darling/usr/bin)
+install(FILES src/apropos src/whatis
+	PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+	DESTINATION libexec/darling/usr/bin)
 
 install(FILES src/makewhatis
 	PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
