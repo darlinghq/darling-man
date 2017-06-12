@@ -34,7 +34,7 @@ set(man_sources
 )
 
 add_darling_executable(man ${man_sources})
-target_link_libraries(man system)
+target_link_libraries(man system xcselect)
 
 install(TARGETS man DESTINATION libexec/darling/usr/bin)
 
