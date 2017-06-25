@@ -1,12 +1,8 @@
 project(man)
 
-cmake_minimum_required(VERSION 2.4.0)
-
 include(darling_exe)
 
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
-include_directories(${DARLING_TOP_DIRECTORY}/src/libc/include/FreeBSD)
 
 # Hide warnings
 add_definitions(
@@ -14,9 +10,15 @@ add_definitions(
 	-Wno-incompatible-library-redeclaration
 	-Wno-incompatible-pointer-types-discards-qualifiers
 )
-add_definitions(-DSTDC_HEADERS)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -nostdinc -fwrapv -fPIC -ggdb")
+add_compile_options(
+	-nostdinc
+	-fwrapv
+)
+
+add_definitions(
+	-DSTDC_HEADERS
+)
 
 set(man_sources
 	src/man.c
