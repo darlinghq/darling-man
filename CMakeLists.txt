@@ -16,23 +16,26 @@ add_compile_options(
 	-fwrapv
 )
 
-add_definitions(
-	-DSTDC_HEADERS
+add_compile_definitions(
+	STDC_HEADERS
+	TERMIOS_HEADER
+	POSIX
+	DO_COMPRESS
 )
 
 set(man_sources
-	src/man.c
-	src/manfile.c
-	src/manpath.c
-	src/man-config.c
-	src/man-getopt.c
-	src/man-iconv.c
-	src/to_cat.c
-	src/different.c
-	src/gripes.c
-	src/glob.c
-	src/util.c
-	src/msg.c
+	man/src/man.c
+	man/src/manfile.c
+	man/src/manpath.c
+	man/src/man-config.c
+	man/src/man-getopt.c
+	man/src/man-iconv.c
+	man/src/to_cat.c
+	man/src/different.c
+	man/src/gripes.c
+	man/src/glob.c
+	man/src/util.c
+	man/src/msg.c
 )
 
 add_darling_executable(man ${man_sources})
@@ -40,17 +43,11 @@ target_link_libraries(man system xcselect)
 
 install(TARGETS man DESTINATION libexec/darling/usr/bin)
 
-install(FILES src/apropos src/whatis
+install(FILES man/src/apropos man/src/whatis
 	PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 	DESTINATION libexec/darling/usr/bin)
 
-# Now done by a C program in doc_cmds
-#install(FILES src/makewhatis
-#	PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
-#	DESTINATION libexec/darling/usr/libexec)
+install(FILES man/src/man.conf DESTINATION libexec/darling/etc)
 
-install(FILES src/man.conf DESTINATION libexec/darling/etc)
-
-install(FILES man/en/apropos.1 man/en/man.1 man/en/whatis.1 DESTINATION libexec/darling/usr/share/man/man1)
-install(FILES man/en/man.conf.5 DESTINATION libexec/darling/usr/share/man/man5)
-#install(FILES man/en/makewhatis.8 DESTINATION libexec/darling/usr/share/man/man8)
+install(FILES man/man/en/apropos.1 man/man/en/man.1 man/man/en/whatis.1 DESTINATION libexec/darling/usr/share/man/man1)
+install(FILES man/man/en/man.conf.5 DESTINATION libexec/darling/usr/share/man/man5)

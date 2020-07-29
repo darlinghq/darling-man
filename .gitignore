@@ -1,1 +1,3 @@
 *~
+*.o
+/man/src/man
