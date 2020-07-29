@@ -1,61 +1,75 @@
-# only executed from a subdir
-MAN1 = man whatis apropos
-MAN5 = man.conf
-MAN8 = makewhatis
-ALL = man.1 whatis.1 apropos.1 man.conf.5
-MAYBE8 = makewhatis
+# Makefile for man
+# [need allow_null_glob_expansion=true]
+# The parts behind % are removed when no message catalogs should be installed
 
-.SUFFIXES: .man .1 .5 .8
+all:	Makefile conf_script source manpages %messages
+	@echo; echo 'You can now do "make install"'
 
-.man.1:
-	@cp $< $@.in; ../../conf_script $@; rm $@.in
+# On a machine with time before distribution time
+# it may be necessary to touch all distributed files
 
-.man.5:
-	@cp $< $@.in; ../../conf_script $@; rm $@.in
+Makefile: Makefile.in configure
+	@echo "Please run configure first"
+	exit 1
 
-.man.8:
-	@cp $< $@.in; ../../conf_script $@; rm $@.in
+conf_script:	configure
+	@echo "Please run configure first"
+	exit 1
 
-INSTALL = @INSTALL@ -c -m 644
+src/Makefile:	conf_script src/Makefile.in
+	cd src; ../conf_script Makefile
 
-# Where to put the manual pages.
-mandir = $(DESTDIR)$(PREFIX)@mandir@$(SLANG)
+man2html/Makefile:	conf_script man2html/Makefile.in
+	cd man2html; ../conf_script Makefile			
 
-all:	$(ALL)
-	for i in $(MAYBE8); \
-		do if test -f $$i.man; then make -f ../Makefile $$i.8; fi; done
+man/Makefile:	conf_script man/Makefile.in
+	cd man; ../conf_script Makefile
 
-install: $(ALL)
-	mkdir -p $(mandir)/man1 $(mandir)/man5 $(mandir)/man8
-	for i in $(MAN1); \
-		do $(INSTALL) $$i.1 $(mandir)/man1/$$i.@man1ext@; done
-	for i in $(MAN5); \
-		do $(INSTALL) $$i.5 $(mandir)/man5/$$i.@man5ext@; done
-	for i in $(MAN8); \
-		do if test -f $$i.8; then $(INSTALL) $$i.8 $(mandir)/man8/$$i.@man8ext@; fi; done
+msgs/Makefile:	conf_script msgs/Makefile.in
+	cd msgs; ../conf_script Makefile
 
-clean:
-	rm -f core *.in *.@man1ext@ *.@man5ext@ *.@man8ext@ *~
+makefiles: src/Makefile man2html/Makefile man/Makefile msgs/Makefile
 
-spotless:
+source:	src/Makefile
+	cd src; $(MAKE)
 
-subdirs:
-	@for i in @languages@; do if test -d $$i; then echo; \
-		echo "==== Making the `cat $$i.txt` man pages. ===="; \
-		cd $$i; make -f ../Makefile; cd ..; \
-		else echo "==== No $$i man pages found. ===="; fi; done
+manhtml: man2html/Makefile source
+	cd man2html; $(MAKE)
 
-installsubdirs:
-	@for i in @languages@; do if test -d $$i; then echo; \
-		echo "==== Installing the `cat $$i.txt` man pages. ===="; \
-		cd $$i; SLANG=/$$i; if test $$SLANG = /en; then SLANG= ; fi; \
-		export SLANG; make -f ../Makefile install; cd ..; \
-		else echo "==== No $$i man pages found. ===="; fi; done
+manpages: man/Makefile
+	cd man; $(MAKE) subdirs
 
-cleansubdirs:
-	@for i in ??; do cd $$i; make -f ../Makefile clean; cd ..; done
+%messages: gencat/gencat msgs/Makefile source
+%	cd msgs; $(MAKE)
+
+%gencat/gencat:
+%	cd gencat; $(MAKE)
+
+install: src/Makefile man/Makefile %msgs/Makefile
+	cd src; $(MAKE) install
+	cd man; $(MAKE) installsubdirs
+%	cd msgs; $(MAKE) install
+	@echo; echo 'Done.'
+	@echo 'In case you want to browse man pages using a www browser,'
+	@echo '"cd man2html", read README, and perhaps "make install-scripts".'
+#	@echo; echo 'Done. In case you want to mount /usr read-only, please'
+#	@echo 'install a symlink /usr/man/whatis -> /var/catman/whatis, or so.'
+
+clean: src/Makefile man/Makefile msgs/Makefile man2html/Makefile
+	cd src; $(MAKE) clean
+	cd man2html; $(MAKE) clean
+	cd man; $(MAKE) cleansubdirs
+	cd msgs; $(MAKE) clean
+	cd gencat; $(MAKE) clean
 	rm -f core *~
 
-spotlesssubdirs:
-	for i in ??; do cd $$i; make -f ../Makefile spotless; cd ..; done
-	rm -f Makefile
+spotless distclean reallyclean: clean
+	cd src; $(MAKE) spotless
+	cd man2html; $(MAKE) spotless
+	cd man; $(MAKE) spotlesssubdirs
+	cd msgs; $(MAKE) spotless
+	cd gencat; $(MAKE) clean
+	rm -f conf_script Makefile
+
+DISTR = COPYING README README.HP README.RedHat README.GNU-WIN32 INSTALL \
+	Makefile.in configure src man2html man msgs gencat catopen misc
