@@ -47,7 +47,7 @@ install(FILES man/src/apropos man/src/whatis
 	PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 	DESTINATION libexec/darling/usr/bin)
 
-install(FILES man/src/man.conf DESTINATION libexec/darling/etc)
+install(FILES man/src/man.conf DESTINATION libexec/darling/private/etc)
 
 install(FILES man/man/en/apropos.1 man/man/en/man.1 man/man/en/whatis.1 DESTINATION libexec/darling/usr/share/man/man1)
 install(FILES man/man/en/man.conf.5 DESTINATION libexec/darling/usr/share/man/man5)
